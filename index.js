@@ -122,16 +122,16 @@ function uploadXpi(xpiPath, jwtToken, selfHosted) {
         let response = yield axios_1.default.post(url, formData, { headers });
         core.info('xpi file uploaded.');
         const uuid = response.data.uuid;
-        let valid = response.data.valid;
+        let processed = response.data.processed;
         // Wait for upload completed
         url = `https://addons.mozilla.org/api/v5/addons/upload/${uuid}/`;
         headers = { Authorization: `jwt ${jwtToken}` };
-        while (!valid) {
+        while (!processed) {
             core.info('xpi not yet processed. Wait 5s.');
             yield new Promise(res => setTimeout(res, 5000));
             core.info('Checking if xpi is processed.');
             response = yield (0, axios_1.default)(url, { headers });
-            valid = response.data.valid;
+            processed = response.data.processed;
         }
         core.info('xpi processed.');
         return uuid;
