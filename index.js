@@ -133,6 +133,9 @@ function uploadXpi(xpiPath, jwtToken, selfHosted) {
             response = yield (0, axios_1.default)(url, { headers });
             processed = response.data.processed;
         }
+        if (!response.data.valid) {
+            throw new Error(`xpi processed, but not valid:\n${JSON.stringify(response.data.validation, null, 2)}`);
+        }
         core.info('xpi processed.');
         return uuid;
     });
